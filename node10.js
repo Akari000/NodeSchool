@@ -1,24 +1,40 @@
 var fs = require('fs');
-var http = require('http')
+var http = require('http');
 var port = process.argv[2];
 var path = process.argv[3];
 
+    
 var server = http.createServer(function (req,res) {
-    // req = HTTPのプロパティ
-    // res = クライアントにヘッダーやボディを返すためのオブジェクト
-    var data = "";
     req.setEncoding("utf8");
-    var file = fs.createReadStream(path); //非同期で呼び出す準備
+    console.log("ok");
+    var data = "";
+    var file = fs.createReadStream(path); 
     file.on("data",function(chunk){
-        data+=chunk;
+        res.write(chunk);
     });
     file.on("end",function(){
-        console.log(data);
+        res.end("request end");
     });
-    req.on('end',()=>{
-        console.log('request read end');
-        res.write("hello world\n");
-        res.end();
-    });
-})
+    // req = HTTPのプロパティ
+    // res = クライアントにヘッダーやボディを返すためのオブジェクト
+});
 server.listen(port)
+
+
+
+
+/*
+res.setEncoding("utf8");出来ないわけ
+res.write(data);でdataが読めない
+->非同期処理が原因
+  dataを読む前に
+  res.end("request end");が呼ばれた．
+streamを活かすために，res.write(chunk);を
+file.on("data",のなかで呼び出し，少しづつデータを渡す仕様にした．
+
+req.on('end'が読まれなかったのは↓を書いて解決した
+req.on("data",function(){});
+ブラウザから読む(node09では"net"を使っているためtelnet)
+
+
+*/

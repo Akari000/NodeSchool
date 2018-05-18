@@ -3,13 +3,13 @@ var http = require("http");
 var url = process.argv[2];
 //console.log(http);
 //console.log(url);
-http.get(url,function(res,err){
-    console.log(err);
-    if(err) return console.log(err);
+
+http.get(url,function(res){
     res.setEncoding("utf8");
     res.on("data",function(data){
         console.log(data);
     });
+    res.on("end",function(){});
 });
 
 //on()の使い方

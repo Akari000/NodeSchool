@@ -15,23 +15,18 @@ function currentDate(){
     var dateArray = [date.getFullYear(),date.getMonth(),date.getDate(),date.getHours(),date.getMinutes()];
     return dateFormat.apply(null, dateArray);
 }
-
-//console.log(currentDate());
-
 var server = net.createServer(function (socket) {
-  // socket handling logic
   socket.write(currentDate() + "\n");//\nは終了の印（TCPのルール）
   socket.end();
 })
 server.listen(port)
 
-//telnet
+
 /*   
 -h
 --help
 help
 man OOO
 curl -help
-
 telnet localhost 8000
 */
